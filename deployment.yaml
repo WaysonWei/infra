@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextjs-app
+  labels:
+    app: nextjs-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nextjs-app
+  template:
+    metadata:
+      labels:
+        app: nextjs-app
+    spec:
+      containers:
+      - name: nextjs-container
+        image: beos2020/website:latest  # Replace with your actual Next.js Docker image
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"  # Or other environment variables as needed
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextjs-service
+spec:
+  selector:
+    app: nextjs-app
+  ports:
+  - protocol: TCP
+    port: 80  # Expose on port 80 for the service
+    targetPort: 3000  # Forward traffic to container port 3000
+  type: ClusterIP  # Or ClusterIP if you want internal exposure
